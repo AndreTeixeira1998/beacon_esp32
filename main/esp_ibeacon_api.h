@@ -14,6 +14,7 @@
  * need to use this macro to transfer while creating or processing
  * iBeacon data */
 #define ENDIAN_CHANGE_U16(x) ((((x)&0xFF00)>>8) + (((x)&0xFF)<<8))
+#define IBEACON_UUID_LEN     16
 
 /* The big endian representation of the beacon identifier. For interoperability purposes, 
  * the first 16+ bytes of the beacon identifier should be unique to the advertiser's organizational unit.
@@ -25,19 +26,10 @@ typedef struct {
     uint8_t type;
     uint16_t company_id;
     uint16_t beacon_type;
-}__attribute__((packed)) esp_ble_ibeacon_head_t;
-
-typedef struct {
-    uint8_t uuid[16];
+    uint8_t uuid[IBEACON_UUID_LEN];
     uint16_t major;
     uint16_t minor;
-    int8_t measured_power;
-}__attribute__((packed)) esp_ble_ibeacon_vendor_t;
-
-
-typedef struct {
-    esp_ble_ibeacon_head_t   ibeacon_head;
-    esp_ble_ibeacon_vendor_t ibeacon_vendor;
+    int8_t measured_power;;
 }__attribute__((packed)) esp_ble_ibeacon_t;
 
 /**
