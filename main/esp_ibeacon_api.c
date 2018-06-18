@@ -22,6 +22,8 @@
 
 #include "esp_ibeacon_api.h"
 
+#define ENDIAN_CHANGE_U16(x) ((((x)&0xFF00)>>8) + (((x)&0xFF)<<8))
+
 static const char* TAG = "IBEACON_API";
 
 static esp_ble_ibeacon_t ibeacon_advertising_data = {
@@ -35,8 +37,6 @@ static esp_ble_ibeacon_t ibeacon_advertising_data = {
     .minor = ENDIAN_CHANGE_U16(1003),
     .measured_power = 0xC5
 };
-
-uint8_t ibeacon_data_size = sizeof(ibeacon_advertising_data);
 
 void ibeacon_config_data(uint8_t *uuid, uint16_t major, uint16_t minor, int8_t measured_power)
 {

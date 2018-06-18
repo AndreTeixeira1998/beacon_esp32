@@ -10,16 +10,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-/* Major and Minor part are stored in big endian mode in iBeacon packet,
- * need to use this macro to transfer while creating or processing
- * iBeacon data */
-#define ENDIAN_CHANGE_U16(x) ((((x)&0xFF00)>>8) + (((x)&0xFF)<<8))
 #define IBEACON_UUID_LEN     16
 
-/* The big endian representation of the beacon identifier. For interoperability purposes, 
- * the first 16+ bytes of the beacon identifier should be unique to the advertiser's organizational unit.
- * Any remaining bytes of the beacon identifier may be subdivided as needed for the use case.
- */
 typedef struct {
     uint8_t flags[3];
     uint8_t length;
@@ -33,13 +25,38 @@ typedef struct {
 }__attribute__((packed)) esp_ble_ibeacon_t;
 
 /**
+ *  @brief  Set the parameters that Ibeacon is going to advertise.
+ *          
+ *  @param  uuid   Pointer to a 16 uint8_t vector. This uuid is used to
+ *                 identify a group of ibeacons from other group.
+ *
+ *  @param  major  For example, is used to define a sub-region of the group
+ *                 defined by the uuid. Is stored in big endian mode.
+ *
+ *  @param  minor  For example, is used to define a subdivision of the region
+ *                 defined by param mayor. Is stored in big endian mode.
+ *
+ *  @param  measured_power  iBeacon signal power measured at 1 meter (Calibrated RSSI@1m).
+ *
+ *  @return None.
  */
 void ibeacon_config_data(uint8_t *uuid, uint16_t major, uint16_t minor, int8_t measured_power);
 
 /**
+ *  @brief  Copy the advertising data stored in esp_ble_ibeacon_t struct in
+ *          a uint8_t vector passed by the function's user.
+ *
+ *  @param  adv_data_ptr  Pointer to a vector with size given by ibeacon_get_adv_data_size().
+ *
+ *  @return None
  */
 void ibeacon_get_adv_data(uint8_t *adv_data_ptr);
 
 /**
+ *  @brief  Get size of all advertising data. 
+ *          It should be used to pass the advertising data size
+ *          to the ble publish function.
+ *
+ *  @return size of esp_ble_ibeacon_t struct
  */
 uint8_t ibeacon_get_adv_data_size(void);
