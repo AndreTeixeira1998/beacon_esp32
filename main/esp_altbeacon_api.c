@@ -21,45 +21,49 @@
 
 static const char* TAG = "ALTBEACON_API";
 
-static esp_ble_altbeacon_t altbeacon_raw_advertising_data = {
-    .altbeacon_head = {
-        .flags = {0x02, 0x01, 0x00},
-        .length = 0x1B,
-        .type = 0xFF,
-        .company_id = 0xFFFF,
-        .beacon_type = 0xACBE
-    },
-    .altbeacon_vendor = {
-        .beacon_id = {0xFD, 0xA5, 0x06, 0x93, 0xA4, 0xE2, 0x4F, 0xB1, 0xAF, 0xCF, 0xC6, 0xEB, 0x11, 0x11, 0x11, 0x11},
-        .beacon_id_extra = {0x00,0x00,0x00,0x00},
-        .reference_rssi = 0xC5,
-        .mfg_reserved = 0x11
-    }
+static esp_ble_altbeacon_t altbeacon_advertising_data = {
+    .flags = {0x02, 0x01, 0x00},
+    .length = 0x1B,
+    .type = 0xFF,
+    .company_id = 0xFFFF,
+    .beacon_type = 0xACBE,
+    .beacon_id = {0xFD, 0xA5, 0x06, 0x93, 0xA4, 0xE2, 0x4F, 0xB1, 0xAF, 0xCF, 0xC6, 0xEB, 0x11, 0x11, 0x11, 0x11},
+    .beacon_id_extra = {0x00,0x00,0x00,0x00},
+    .reference_rssi = 0xC5,
+    .mfg_reserved = 0x11
 };
 
-uint8_t altbeacon_data_size = sizeof(altbeacon_raw_advertising_data);
-
-void altbeacon_config_data(uint8_t *uuid, uint8_t *uuid_extra, uint8_t ref_rssi, uint8_t mfg_reserved)
+void altbeacon_config_data(uint8_t *id, uint8_t *id_extra, uint8_t ref_rssi, uint8_t mfg_reserved)
 {
-    if( uuid!=NULL && sizeof(uuid)==16  ){
-        memcpy( altbeacon_raw_advertising_data.altbeacon_vendor.beacon_id, uuid, 16);
-    }   
-    if( uuid_extra!=NULL && sizeof(uuid_extra)==4 ){
-        memcpy( altbeacon_raw_advertising_data.altbeacon_vendor.beacon_id_extra, uuid_extra, 4);
-    }
-    altbeacon_raw_advertising_data.altbeacon_vendor.reference_rssi = ref_rssi;
-    altbeacon_raw_advertising_data.altbeacon_vendor.mfg_reserved = mfg_reserved;
+    if( id!=NULL ){
+        memcpy( altbeacon_advertising_data.beacon_id, 
+                id, 
+                ALTBEACON_ID_LEN
+              );
+    }  
 
+    if( id_extra!=NULL ){
+        memcpy( altbeacon_advertising_data.beacon_id_extra, 
+                id_extra, 
+                ALTBEACON_EXTRA_ID_LEN
+              );
+    }
+
+    altbeacon_advertising_data.reference_rssi = ref_rssi;
+    altbeacon_advertising_data.mfg_reserved = mfg_reserved;
 }
 
 void altbeacon_get_adv_data(uint8_t *adv_data_ptr){
     if( adv_data_ptr != NULL){
-        memcpy(adv_data_ptr, &altbeacon_raw_advertising_data, altbeacon_data_size);
+        memcpy( adv_data_ptr, 
+                &altbeacon_advertising_data, 
+                sizeof(altbeacon_advertising_data)
+              );
     }
 }
 
 uint8_t altbeacon_get_adv_data_size(void){
-    return altbeacon_data_size;
+    return sizeof(altbeacon_advertising_data);
 }
 
 

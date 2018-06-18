@@ -16,30 +16,24 @@
    Any remaining bytes of the beacon identifier may be subdivided as needed for the use case.
  */
 
+#define ALTBEACON_ID_LEN        16
+#define ALTBEACON_EXTRA_ID_LEN  4
+
 typedef struct {
     uint8_t flags[3];
     uint8_t length;
     uint8_t type;
     uint16_t company_id;
     uint16_t beacon_type;
-}__attribute__((packed)) esp_ble_altbeacon_head_t;
-
-typedef struct {
-    uint8_t beacon_id[16];
-    uint8_t beacon_id_extra[4];
+    uint8_t beacon_id[ALTBEACON_ID_LEN];
+    uint8_t beacon_id_extra[ALTBEACON_EXTRA_ID_LEN];
     int8_t reference_rssi;
     uint8_t mfg_reserved;
-}__attribute__((packed)) esp_ble_altbeacon_vendor_t;
-
-
-typedef struct {
-    esp_ble_altbeacon_head_t   altbeacon_head;
-    esp_ble_altbeacon_vendor_t altbeacon_vendor;
 }__attribute__((packed)) esp_ble_altbeacon_t;
 
 /**
  */
-void altbeacon_config_data(uint8_t *uuid, uint8_t *uuid_extra, uint8_t ref_rssi, uint8_t mfg_reserved);
+void altbeacon_config_data(uint8_t *id, uint8_t *id_extra, uint8_t ref_rssi, uint8_t mfg_reserved);
 
 /**
  */
