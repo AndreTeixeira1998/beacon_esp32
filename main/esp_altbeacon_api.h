@@ -29,7 +29,7 @@ typedef struct {
 }__attribute__((packed)) esp_ble_altbeacon_t;
 
 /**
- *  @brief  Set the parameters that Ibeacon is going to advertise.
+ *  @brief  Set the parameters that AltBeacon is going to advertise.
  *          
  *  @param  id   16 byte vector in big endian representation.
  *               This id should be unique to the advertiser's organizational unit.
