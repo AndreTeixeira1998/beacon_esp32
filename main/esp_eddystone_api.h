@@ -10,6 +10,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#define EDDYSTONE_UID_NAMESPACE_LEN 10
+#define EDDYSTONE_UID_INSTANCE_LEN  6
+
 typedef struct {
         uint8_t flags[3];
         uint8_t length;
@@ -17,8 +20,8 @@ typedef struct {
         uint16_t beacon_type;
         uint8_t frame_type;
         int8_t ranging_data;
-        uint8_t id_namespace[10];
-        uint8_t id_instance[6];
+        uint8_t id_namespace[EDDYSTONE_UID_NAMESPACE_LEN];
+        uint8_t id_instance[EDDYSTONE_UID_INSTANCE_LEN];
         uint8_t rfu[4];
 }__attribute__((packed)) esp_ble_eddystone_uuid_t;
 

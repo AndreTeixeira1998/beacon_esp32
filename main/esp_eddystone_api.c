@@ -33,21 +33,19 @@ static esp_ble_eddystone_uuid_t eddystone_raw_advertising_data = {
         .rfu = {0x03,0xFF,0xE0,0x00}
 };
 
-uint8_t eddystone_data_size = sizeof(eddystone_raw_advertising_data);
-
 void eddystone_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t ranging_data)
 {
     if( id_namespace!=NULL ){
         memcpy( eddystone_raw_advertising_data.id_namespace, 
                 id_namespace, 
-                sizeof(eddystone_raw_advertising_data.id_namespace) 
+                EDDYSTONE_UID_NAMESPACE_LEN
                );
     }   
 
     if( id_instance!=NULL ){
         memcpy( eddystone_raw_advertising_data.id_instance, 
                 id_instance, 
-                sizeof(eddystone_raw_advertising_data.id_instance)
+                EDDYSTONE_UID_INSTANCE_LEN
                );
     }
     
@@ -55,15 +53,16 @@ void eddystone_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t 
 }
 
 void eddystone_get_adv_data(uint8_t *adv_data_ptr){
-    //uint8_t adv_data_size;
-
     if( adv_data_ptr != NULL){
-        memcpy(adv_data_ptr, &eddystone_raw_advertising_data, eddystone_data_size);
+        memcpy( adv_data_ptr, 
+                &eddystone_raw_advertising_data, 
+                sizeof(eddystone_raw_advertising_data)
+              );
     }
 }
 
 uint8_t eddystone_get_adv_data_size(void){
-    return eddystone_data_size;
+    return sizeof(eddystone_raw_advertising_data);
 }
 
 
