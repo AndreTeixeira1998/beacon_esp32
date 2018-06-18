@@ -10,9 +10,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "esp_gap_ble_api.h"
-#include "esp_gattc_api.h"
-
 /* Major and Minor part are stored in big endian mode in iBeacon packet,
  * need to use this macro to transfer while creating or processing
  * iBeacon data */
@@ -42,7 +39,6 @@ typedef struct {
     esp_ble_ibeacon_head_t   ibeacon_head;
     esp_ble_ibeacon_vendor_t ibeacon_vendor;
 }__attribute__((packed)) esp_ble_ibeacon_t;
-
 
 /**
  */

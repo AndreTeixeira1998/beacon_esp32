@@ -10,21 +10,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "esp_gap_ble_api.h"
-#include "esp_gattc_api.h"
-
-
 /* For ALTBeacon packet format, please refer to https://github.com/AltBeacon/spec
- */
-
-/* Major and Minor part are stored in big endian mode in iBeacon packet,
- * need to use this macro to transfer while creating or processing
- * iBeacon data */
-//#define ENDIAN_CHANGE_U16(x) ((((x)&0xFF00)>>8) + (((x)&0xFF)<<8))
-
-/* The big endian representation of the beacon identifier. For interoperability purposes, 
- * the first 16+ bytes of the beacon identifier should be unique to the advertiser's organizational unit.
- * Any remaining bytes of the beacon identifier may be subdivided as needed for the use case.
+   The big endian representation of the beacon identifier. For interoperability purposes, 
+   the first 16+ bytes of the beacon identifier should be unique to the advertiser's organizational unit.
+   Any remaining bytes of the beacon identifier may be subdivided as needed for the use case.
  */
 
 typedef struct {
@@ -47,7 +36,6 @@ typedef struct {
     esp_ble_altbeacon_head_t   altbeacon_head;
     esp_ble_altbeacon_vendor_t altbeacon_vendor;
 }__attribute__((packed)) esp_ble_altbeacon_t;
-
 
 /**
  */

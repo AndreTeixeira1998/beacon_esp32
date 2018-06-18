@@ -5,15 +5,10 @@
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
 */
-
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-
-#include "esp_gap_ble_api.h"
-#include "esp_gattc_api.h"
-
 
 typedef struct {
         uint8_t flags[3];
@@ -26,7 +21,6 @@ typedef struct {
         uint8_t id_instance[6];
         uint8_t rfu[4];
 }__attribute__((packed)) esp_ble_eddystone_uuid_t;
-
 
 /**
  */

@@ -6,14 +6,9 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-
-
 /****************************************************************************
 *
-* This file is for iBeacon APIs. It supports both iBeacon encode and decode. 
-*
-* iBeacon is a trademark of Apple Inc. Before building devices which use iBeacon technology,
-* visit https://developer.apple.com/ibeacon/ to obtain a license.
+* This file is for AltBeacon APIs. 
 *
 ****************************************************************************/
 #include <stdint.h>
@@ -58,8 +53,6 @@ void altbeacon_config_data(uint8_t *uuid, uint8_t *uuid_extra, uint8_t ref_rssi,
 }
 
 void altbeacon_get_adv_data(uint8_t *adv_data_ptr){
-    //uint8_t adv_data_size;
-
     if( adv_data_ptr != NULL){
         memcpy(adv_data_ptr, &altbeacon_raw_advertising_data, altbeacon_data_size);
     }
