@@ -4,7 +4,7 @@ The configuration is done in compile time. Update parameters such as the beacon 
 BLE or UART are not supported yet.
 
 ## Apis
-It consist in three Api's:
+It consist in four Api's:
 * beacon_ble_api:
 Contains methods to start publishing ble network and configure the raw data to publish.
 * esp_altbeacon_api:
