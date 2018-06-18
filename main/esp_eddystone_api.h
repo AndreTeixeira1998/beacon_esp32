@@ -23,7 +23,7 @@ typedef struct {
         uint8_t id_namespace[EDDYSTONE_UID_NAMESPACE_LEN];
         uint8_t id_instance[EDDYSTONE_UID_INSTANCE_LEN];
         uint8_t rfu[4];
-}__attribute__((packed)) esp_ble_eddystone_uuid_t;
+}__attribute__((packed)) esp_ble_eddystone_uid_t;
 
 /**
  *  @brief  Set the parameters that eddystone UID is going to advertise.

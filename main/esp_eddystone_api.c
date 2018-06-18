@@ -21,7 +21,7 @@
 
 static const char* TAG = "EDDYSTONE_API";
 
-static esp_ble_eddystone_uuid_t eddystone_raw_advertising_data = {
+static esp_ble_eddystone_uid_t eddystone_advertising_data = {
         .flags = {0x02, 0x01, 0x00},
         .length = 21,
         .type = 0x16,
@@ -36,33 +36,33 @@ static esp_ble_eddystone_uuid_t eddystone_raw_advertising_data = {
 void eddystone_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t ranging_data)
 {
     if( id_namespace!=NULL ){
-        memcpy( eddystone_raw_advertising_data.id_namespace, 
+        memcpy( eddystone_advertising_data.id_namespace, 
                 id_namespace, 
                 EDDYSTONE_UID_NAMESPACE_LEN
                );
     }   
 
     if( id_instance!=NULL ){
-        memcpy( eddystone_raw_advertising_data.id_instance, 
+        memcpy( eddystone_advertising_data.id_instance, 
                 id_instance, 
                 EDDYSTONE_UID_INSTANCE_LEN
                );
     }
     
-    eddystone_raw_advertising_data.ranging_data = ranging_data;
+    eddystone_advertising_data.ranging_data = ranging_data;
 }
 
 void eddystone_get_adv_data(uint8_t *adv_data_ptr){
     if( adv_data_ptr != NULL){
         memcpy( adv_data_ptr, 
-                &eddystone_raw_advertising_data, 
-                sizeof(eddystone_raw_advertising_data)
+                &eddystone_advertising_data, 
+                sizeof(eddystone_advertising_data)
               );
     }
 }
 
 uint8_t eddystone_get_adv_data_size(void){
-    return sizeof(eddystone_raw_advertising_data);
+    return sizeof(eddystone_advertising_data);
 }
 
 
