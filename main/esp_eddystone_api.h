@@ -13,6 +13,9 @@
 #define EDDYSTONE_UID_NAMESPACE_LEN 10
 #define EDDYSTONE_UID_INSTANCE_LEN  6
 
+#define FRAME_TYPE_UID 0x00
+#define FRAME_TYPE_TLM 0x20
+
 typedef struct {
         uint8_t flags[3];
         uint8_t length;
@@ -24,6 +27,19 @@ typedef struct {
         uint8_t id_instance[EDDYSTONE_UID_INSTANCE_LEN];
         uint8_t rfu[4];
 }__attribute__((packed)) esp_ble_eddystone_uid_t;
+
+typedef struct {
+        uint8_t flags[3];
+        uint8_t length;
+        uint8_t type;
+        uint16_t beacon_type;
+        uint8_t frame_type;   /* TLM frame type*/
+        uint8_t version;      /* TLM version */
+        uint16_t vbatt;       /* Battery Voltage 1mV/bit. Big Endian */
+        uint16_t temp;        /* Beacon temperature. Big Endian */
+        uint32_t adv_cnt;     /* Advertising PDU count. Big Endian */
+        uint32_t sec_cnt;     /* Time since power-on or reboot. Big Endian */
+}__attribute__((packed)) esp_ble_eddystone_tlm_t;
 
 /**
  *  @brief  Set the parameters that eddystone UID is going to advertise.
@@ -40,7 +56,7 @@ typedef struct {
  *
  *  @return None.
  */
-void eddystone_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t ranging_data);
+void eddystone_uid_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t ranging_data);
 
 /**
  *  @brief  Copy the advertising data stored in esp_ble_eddystone_uid_t struct in

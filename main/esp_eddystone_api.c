@@ -19,6 +19,9 @@
 
 #include "esp_eddystone_api.h"
 
+#define ENDIAN_CHANGE_U16(x) ( (((x)&0xFF00)>>8) + (((x)&0xFF)<<8) )
+#define ENDIAN_CHANGE_U32(x) ( (((x)&0xFF000000)>>24) + (((x)&0x00FF0000)>>16) + (((x)&0x0000FF00)<<16) + (((x)&0x000000FF)<<24) )
+
 static const char* TAG = "EDDYSTONE_API";
 
 static esp_ble_eddystone_uid_t eddystone_advertising_data = {
@@ -33,7 +36,29 @@ static esp_ble_eddystone_uid_t eddystone_advertising_data = {
         .rfu = {0x03,0xFF,0xE0,0x00}
 };
 
-void eddystone_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t ranging_data)
+static esp_ble_eddystone_tlm_t eddystone_tlm_advertising_data = {
+        .flags = {0x02, 0x01, 0x00},
+        .length = 17,
+        .type = 0x16,
+        .beacon_type = 0xFEAA,
+        .frame_type = 0x20,
+        .version = 0x00,
+        .vbatt = 0,
+        .temp = 0,
+        .adv_cnt = 0,
+        .sec_cnt = 0
+};
+
+
+void eddystone_tlm_config_data(uint16_t vbat, uint16_t temp, uint32_t adv_cnt, uint32_t sec_cnt)
+{
+    eddystone_tlm_advertising_data.vbat = ENDIAN_CHANGE_U16(vbat);
+    eddystone_tlm_advertising_data.temo = ENDIAN_CHANGE_U16(temp);
+    eddystone_tlm_advertising_data.adv_cnt = ENDIAN_CHANGE_U32(adv_cnt);
+    eddystone_tlm_advertising_data.sec_cnt = ENDIAN_CHANGE_U32(sec_cnt);
+}
+
+void eddystone_uid_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t ranging_data)
 {
     if( id_namespace!=NULL ){
         memcpy( eddystone_advertising_data.id_namespace, 
@@ -52,17 +77,35 @@ void eddystone_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t 
     eddystone_advertising_data.ranging_data = ranging_data;
 }
 
-void eddystone_get_adv_data(uint8_t *adv_data_ptr){
+void eddystone_get_adv_data(uint8_t *adv_data_ptr, uint8_t frame_type){
     if( adv_data_ptr != NULL){
-        memcpy( adv_data_ptr, 
-                &eddystone_advertising_data, 
-                sizeof(eddystone_advertising_data)
-              );
+
+        switch(frame_type)
+        {
+          case FRAME_TYPE_UID:
+              memcpy(adv_data_ptr, &eddystone_advertising_data, sizeof(eddystone_advertising_data));
+            break;
+          case FRAME_TYPE_TLM:
+              memcpy(adv_data_ptr, &eddystone_advertising_data, sizeof(eddystone_advertising_data));
+            break;
+          default:
+            break;
+        }
+        
     }
 }
 
-uint8_t eddystone_get_adv_data_size(void){
-    return sizeof(eddystone_advertising_data);
+uint8_t eddystone_get_adv_data_size(uint8_t frame_type){
+    switch(frame_type)
+    {
+      case FRAME_TYPE_UID:
+        return sizeof(eddystone_uid_advertising_data);
+      case FRAME_TYPE_TLM:
+        return sizeof(eddystone_tlm_advertising_data);
+      default:
+        return 0;
+    }
+    
 }
 
 
