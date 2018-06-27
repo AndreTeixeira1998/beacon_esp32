@@ -7,8 +7,9 @@
 #define BEACON_MODE_SCANNER    1
 
 #define BEACON_TYPE_ALTBEACON 2
-#define BEACON_TYPE_IBEACON	  3	
-#define BEACON_TYPE_EDDYSTONE_UUID 4
+#define BEACON_TYPE_IBEACON	  3
+#define BEACON_TYPE_EDDYSTONE_UID 4
+#define BEACON_TYPE_EDDYSTONE_TLM 5
 
 /**
  *	@brief	Init esp32's ble controller and register callbacks functions
@@ -31,7 +32,7 @@ void beacon_ble_config(uint8_t beacon_mode, uint8_t beacon_type);
 /**
  *	@brief	get the beacon type that is configured.
  *
- *	@return BEACON_MODE_ADVERTISER 
+ *	@return BEACON_MODE_ADVERTISER
  *	@return BEACON_MODE_SCANNER
  */
 uint8_t beacon_get_type(void);
@@ -67,8 +68,8 @@ void beacon_advertiser_start(uint8_t *raw_adv_data, uint8_t raw_adv_data_size);
 /**
  *	@brief	When beacon is an scanner, set the scan window and the scan interval.
  *
- *	@param	scan_window 	
- *	@param 	scan_interval		
+ *	@param	scan_window
+ *	@param 	scan_interval
  *
  *	@return None
  */
