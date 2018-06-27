@@ -36,7 +36,7 @@ typedef struct {
         uint8_t frame_type;   /* TLM frame type*/
         uint8_t version;      /* TLM version */
         uint16_t vbatt;       /* Battery Voltage 1mV/bit. Big Endian */
-        uint8_t temp_ent;        /* Beacon temperature. Big Endian */
+        int8_t temp_ent;        /* Beacon temperature. Big Endian */
         uint8_t temp_dec;
         uint32_t adv_cnt;     /* Advertising PDU count. Big Endian */
         uint32_t sec_cnt;     /* Time since power-on or reboot. Big Endian */

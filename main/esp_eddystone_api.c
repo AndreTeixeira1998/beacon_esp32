@@ -53,11 +53,17 @@ static esp_ble_eddystone_tlm_t eddystone_tlm_advertising_data = {
 
 void eddystone_tlm_config_data(uint16_t vbatt, float temp, uint32_t adv_cnt, uint32_t sec_cnt)
 {
+    int8_t temp_88_h = 0;
+    uint8_t temp_88_l = 0;
+
     eddystone_tlm_advertising_data.vbatt = ENDIAN_CHANGE_U16(vbatt);
 
-    uint8_t temp_88_h = 25;
-    uint8_t temp_88_l = (30 * 256) / 100;
-    ESP_LOGI(TAG, "Telemetry temperature: %d  %d  ", temp_88_h, temp_88_l);
+    if(temp >= -128 && temp <= 127){
+      temp_88_h = (int8_t) temp;
+      temp_88_l = (uint8_t) ((temp - temp_88_h)*100);
+      temp_88_l = (temp_88_l * 256)/100;
+      ESP_LOGI(TAG, "Telemetry temperature: %d  %d  ", temp_88_h, temp_88_l);
+    } 
 
     eddystone_tlm_advertising_data.temp_ent = temp_88_h;
     eddystone_tlm_advertising_data.temp_dec = temp_88_l;
