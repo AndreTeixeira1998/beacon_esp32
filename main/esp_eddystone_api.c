@@ -24,7 +24,7 @@
 
 static const char* TAG = "EDDYSTONE_API";
 
-static esp_ble_eddystone_uid_t eddystone_advertising_data = {
+static esp_ble_eddystone_uid_t eddystone_uid_advertising_data = {
         .flags = {0x02, 0x01, 0x00},
         .length = 21,
         .type = 0x16,
@@ -44,16 +44,23 @@ static esp_ble_eddystone_tlm_t eddystone_tlm_advertising_data = {
         .frame_type = 0x20,
         .version = 0x00,
         .vbatt = 0,
-        .temp = 0,
+        .temp_ent = 0,
+        .temp_dec = 0,
         .adv_cnt = 0,
         .sec_cnt = 0
 };
 
 
-void eddystone_tlm_config_data(uint16_t vbat, uint16_t temp, uint32_t adv_cnt, uint32_t sec_cnt)
+void eddystone_tlm_config_data(uint16_t vbatt, float temp, uint32_t adv_cnt, uint32_t sec_cnt)
 {
-    eddystone_tlm_advertising_data.vbat = ENDIAN_CHANGE_U16(vbat);
-    eddystone_tlm_advertising_data.temo = ENDIAN_CHANGE_U16(temp);
+    eddystone_tlm_advertising_data.vbatt = ENDIAN_CHANGE_U16(vbatt);
+
+    uint8_t temp_88_h = 25;
+    uint8_t temp_88_l = (30 * 256) / 100;
+    ESP_LOGI(TAG, "Telemetry temperature: %d  %d  ", temp_88_h, temp_88_l);
+
+    eddystone_tlm_advertising_data.temp_ent = temp_88_h;
+    eddystone_tlm_advertising_data.temp_dec = temp_88_l;
     eddystone_tlm_advertising_data.adv_cnt = ENDIAN_CHANGE_U32(adv_cnt);
     eddystone_tlm_advertising_data.sec_cnt = ENDIAN_CHANGE_U32(sec_cnt);
 }
@@ -61,37 +68,37 @@ void eddystone_tlm_config_data(uint16_t vbat, uint16_t temp, uint32_t adv_cnt, u
 void eddystone_uid_config_data(uint8_t *id_namespace, uint8_t *id_instance, uint8_t ranging_data)
 {
     if( id_namespace!=NULL ){
-        memcpy( eddystone_advertising_data.id_namespace, 
-                id_namespace, 
+        memcpy( eddystone_uid_advertising_data.id_namespace,
+                id_namespace,
                 EDDYSTONE_UID_NAMESPACE_LEN
                );
-    }   
+    }
 
     if( id_instance!=NULL ){
-        memcpy( eddystone_advertising_data.id_instance, 
-                id_instance, 
+        memcpy( eddystone_uid_advertising_data.id_instance,
+                id_instance,
                 EDDYSTONE_UID_INSTANCE_LEN
                );
     }
-    
-    eddystone_advertising_data.ranging_data = ranging_data;
+
+    eddystone_uid_advertising_data.ranging_data = ranging_data;
 }
 
 void eddystone_get_adv_data(uint8_t *adv_data_ptr, uint8_t frame_type){
-    if( adv_data_ptr != NULL){
-
+    if( adv_data_ptr != NULL)
+    {
         switch(frame_type)
         {
           case FRAME_TYPE_UID:
-              memcpy(adv_data_ptr, &eddystone_advertising_data, sizeof(eddystone_advertising_data));
+              memcpy(adv_data_ptr, &eddystone_uid_advertising_data, sizeof(eddystone_uid_advertising_data));
             break;
           case FRAME_TYPE_TLM:
-              memcpy(adv_data_ptr, &eddystone_advertising_data, sizeof(eddystone_advertising_data));
+              memcpy(adv_data_ptr, &eddystone_tlm_advertising_data, sizeof(eddystone_tlm_advertising_data));
             break;
           default:
             break;
         }
-        
+
     }
 }
 
@@ -105,7 +112,4 @@ uint8_t eddystone_get_adv_data_size(uint8_t frame_type){
       default:
         return 0;
     }
-    
 }
-
-
